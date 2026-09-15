@@ -1,4 +1,6 @@
 *.root
 *.png
 *.pdf
+*.yml
+*.ipynb
 __pycache__/
