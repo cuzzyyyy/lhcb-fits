@@ -1,0 +1,11 @@
+name: root_env
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - jupyter
+  - ipykernel
+  - ROOT
+  - numpy
+  - pandas
+  - matplotlib
