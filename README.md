@@ -1,1 +1,1 @@
-This is a summary of my work with partcile physics in which im trying to model B meson cascade decay using ROOT. bw_fit.py, gauss_fit.py and cat_hist.py are written using pyROOT, whereas the other ones are based on RooFit.
+This is a summary of my partcile physics work. With this project im trying to model B meson cascade decay using ROOT. bw_fit.py, gauss_fit.py and cat_hist.py are written using pyROOT, whereas the other ones are created using RooFit.
