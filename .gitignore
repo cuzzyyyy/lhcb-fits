@@ -4,3 +4,7 @@
 *.yml
 *.ipynb
 __pycache__/
+bkgcat/
+fity/
+.vscode/
+.DS_Store
