@@ -6,16 +6,16 @@ ROOT.RooMsgService.instance().setGlobalKillBelow(ROOT.RooFit.WARNING)
 file = ROOT.TFile.Open("Bs_DsKstar_magup.root", "READ")
 
 # definicja sciezki i wyciagniecie "DD" lub "LL" do zapisu nazwy
-tree_path = "LL_KKpi/DecayTree"
+tree_path = "DD_KKpi/DecayTree"
 track_type = tree_path.split("_")[0]
 
 tree = file.Get(tree_path)
 
 # definicja nazw zmiennych, okna masy dla mezonu D i liczby binow
-mass_var = "D_M"
-cat_var = "D_BKGCAT"
-low_limit = 1880
-upp_limit = 2060
+mass_var = "KS0_M"
+cat_var = "KS0_BKGCAT"
+low_limit = 420
+upp_limit = 580
 nbins = 100
 
 # inicjalizacja zmiennych roofitowych z odpowiednimi zakresami fizycznymi
@@ -31,16 +31,18 @@ ROOT.RooFit.Import(tree),
 )
 
 # odcinanie czesci danych ze wzgledu na kategorie
-reduced_data = dataset.reduce(ROOT.RooFit.Cut(f"{cat_var} < 30"))
+reduced_data = dataset.reduce(ROOT.RooFit.Cut(f"{cat_var} < 30 || {cat_var} == 50"))
 
 # wspolna srednia dla obu modeli
-mean = ROOT.RooRealVar("mean", "mean", 1970, 1960, 1990)
+mean = ROOT.RooRealVar("mean", "mean", 495, 490, 510)
 
 # double-sided hypatia - parametry
 sigma_h = ROOT.RooRealVar("sigma_h", "sigma Hypatia", 5, 0.1, 20)
-lambda_h = ROOT.RooRealVar("lambda_h", "lambda", -2.5, -10, 10)
-zeta_h = ROOT.RooRealVar("zeta_h", "zeta", 0.0001, 1e-5, 0.1)
-beta_h = ROOT.RooRealVar("beta_h", "beta", 0.0, -0.1, 0.1)
+lambda_h = ROOT.RooRealVar("lambda_h", "lambda", -2.5, -10, -1)
+zeta_h = ROOT.RooRealVar("zeta_h", "zeta", 0.0, 0.0, 1.0)
+zeta_h.setConstant(True)
+beta_h = ROOT.RooRealVar("beta_h", "beta", 0.0, -1.0, 1.0)
+beta_h.setConstant(True)
 a1_h = ROOT.RooRealVar("a1_h", "a1", 2.0, 1.0, 10.0)
 n1_h = ROOT.RooRealVar("n1_h", "n1", 2.0, 1.0, 10.0)
 a2_h = ROOT.RooRealVar("a2_h", "a2", 2.0, 1.0, 10.0)
@@ -48,8 +50,6 @@ n2_h = ROOT.RooRealVar("n2_h", "n2", 2.0, 1.0, 10.0)
 
 # zamrozenie niektorych parametrow ksztaltu, zeby fit nie zwariowal na surowych danych
 lambda_h.setConstant(True)
-zeta_h.setConstant(True)
-beta_h.setConstant(True)
 
 hypatia = ROOT.RooHypatia2(
 "hypatia",
@@ -89,7 +89,7 @@ signal_model.fitTo(reduced_data, ROOT.RooFit.PrintLevel(-1))
 
 # inicjalizacja ramki do rysowania z odpowiednim tytulem
 frame = mass_roo.frame(
-ROOT.RooFit.Title("hypatia + johnson fit for data cut (BKG_CAT < 30)")
+ROOT.RooFit.Title("hypatia + johnson fit for data cut (BKG_CAT < 30 || BKG_CAT == 50)")
 )
 
 # fitowanie wlasciwe z zapisaniem statusu i nalozenie wynikow na ramke
@@ -157,4 +157,4 @@ line.SetLineStyle(2)
 line.Draw("SAME")
 
 # automatyczny zapis wykorzystujący track_type (DD lub LL w nazwie)
-canvas.SaveAs(f"1_{mass_var}_johnson_hypatia_fit_pull_{track_type}_30.png")
+canvas.SaveAs(f"{mass_var}_hypatia_{track_type}_extended.png")
